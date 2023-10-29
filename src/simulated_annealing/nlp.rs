@@ -29,13 +29,13 @@ fn main() {
     let mut cur_v: f64 = init_v;
 
     // 현재 해의 함수값
-    let mut zc = func(cur_v);
+    let mut zc: f64 = func(cur_v);
 
     // 최적해
-    let mut best_x = cur_v;
+    let mut best_x: f64 = cur_v;
 
     // 최적해의 함수값
-    let mut best_z = zc;
+    let mut best_z: f64 = zc;
 
     // 반복 횟수
     let mut repetition: usize = 0;
@@ -56,7 +56,7 @@ fn main() {
 
         loop {
             // 평균이 0이고 표준편차가 1인 정규분포를 따르는 난수 생성
-            let rand_v: f64 = thread_rng().sample(StandardNormal);
+            let rand_v = thread_rng().sample(StandardNormal);
             // 다음 해 후보 생성
             let next_v = cur_v + rand_v * sigma;
 
@@ -66,7 +66,7 @@ fn main() {
                 let zn = func(next_v);
 
                 // 다음 해 후보가 현재 해보다 함수값이 클 때
-                if zc < zn {
+                if zn > zc {
                     zc = zn;
                     cur_v = next_v;
 
