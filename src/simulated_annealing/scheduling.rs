@@ -4,7 +4,7 @@ use rand::seq::SliceRandom;
 type ARR = [usize; MAX];
 
 // 1회 반복당 연산 횟수
-const MAX_REPETITION: usize = 1000;
+const MAX_REPETITION: usize = 10000;
 
 // 온도 스케쥴
 const T: [f64; 5] = [0.2, 0.5, 0.5, 0.5, 0.5];
@@ -27,13 +27,13 @@ fn main() {
     // 현재 해
     let mut cur_v: ARR = init_v;
 
-    // 현재 해의 함수값
+    // 현재 해의 적합도
     let mut zc: i64 = func(cur_v);
 
     // 최적해
     let mut best_x: ARR = cur_v;
 
-    // 최적해의 함수값
+    // 최적해의 적합도
     let mut best_z: i64 = zc;
 
     // 반복 횟수
@@ -48,7 +48,7 @@ fn main() {
     // 현재 온도
     let mut cur_t: f64 = func(cur_v) as f64 * T[cur_t_index];
 
-    // (1회 반복당 연산 횟수 * 온도 스케쥴의 길이)만큼 반복
+    // (1회 반복당 연산 횟수 * 온도 스케쥴의 길이)만큼 연산 반복
     while count < MAX_REPETITION * T.len() {
         repetition += 1;
         count += 1;
@@ -58,22 +58,22 @@ fn main() {
             let mut next_v = core::array::from_fn(|i| i);
             next_v.shuffle(&mut thread_rng());
 
-            // 다음 해 후보의 함수값 생성
+            // 다음 해 후보의 적합도 생성
             let zn = func(next_v);
 
-            // 다음 해 후보가 현재 해보다 함수값이 작을 때
+            // 다음 해 후보가 현재 해보다 적합도가 작을 때
             if zn < zc {
                 zc = zn;
                 cur_v = next_v;
 
-                // 다음 해 후보가 최적해보다 함수값이 작을 때
+                // 다음 해 후보가 최적해보다 적합도가 작을 때
                 if zn < best_z {
                     best_z = zn;
                     best_x = next_v;
                     break;
                 }
             } else {
-                // e^((현재 해의 함수값 - 다음 해의 함수값) / 현재 온도)
+                // 채택 확률 계산 e^((현재 해의 적합도 - 다음 해의 적합도) / 현재 온도)
                 let acceptance = ((zc - zn) as f64 / cur_t).exp();
 
                 // 0부터 1 사이의 난수 < acceptance 라면 채택
@@ -85,7 +85,7 @@ fn main() {
             }
         }
 
-        // 1회 반복당 연산 횟수를 채웠다면 다음 온도를 적용
+        // 1회 반복당 연산 횟수를 채웠을 때 다음 온도 적용
         if repetition == MAX_REPETITION {
             repetition = 0;
             cur_t_index += 1;
@@ -97,5 +97,5 @@ fn main() {
     }
 
     println!("최적해: {:?}", best_x);
-    println!("최적해의 함수값: {}", best_z);
+    println!("최적해의 적합도: {}", best_z);
 }
