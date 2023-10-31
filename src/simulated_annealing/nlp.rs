@@ -28,13 +28,13 @@ fn main() {
     // 현재 해
     let mut cur_v: f64 = init_v;
 
-    // 현재 해의 함수값
+    // 현재 해의 적합도
     let mut zc: f64 = func(cur_v);
 
     // 최적해
     let mut best_x: f64 = cur_v;
 
-    // 최적해의 함수값
+    // 최적해의 적합도
     let mut best_z: f64 = zc;
 
     // 반복 횟수
@@ -62,22 +62,22 @@ fn main() {
 
             // 가능 해인지 확인
             if next_v >= LB && next_v <= UB {
-                // 다음 해 후보의 함수값 생성
+                // 다음 해 후보의 적합도 생성
                 let zn = func(next_v);
 
-                // 다음 해 후보가 현재 해보다 함수값이 클 때
+                // 다음 해 후보가 현재 해보다 적합도가 클 때
                 if zn > zc {
                     zc = zn;
                     cur_v = next_v;
 
-                    // 다음 해 후보가 최적해보다 함수값이 클 때
+                    // 다음 해 후보가 최적해보다 적합도가 클 때
                     if zn > best_z {
                         best_z = zn;
                         best_x = next_v;
                         break;
                     }
                 } else {
-                    // e^((현재 해의 함수값 - 다음 해의 함수값) / 현재 온도)
+                    // e^((현재 해의 적합도 - 다음 해의 적합도) / 현재 온도)
                     let acceptance = ((zc - zn) / cur_t).exp();
 
                     // 0부터 1 사이의 난수 < acceptance 라면 채택
@@ -102,5 +102,5 @@ fn main() {
     }
 
     println!("최적해: {}", best_x);
-    println!("최적해의 함수값: {}", best_z);
+    println!("최적해의 적합도: {}", best_z);
 }
